@@ -17,14 +17,16 @@ def save(file_name):
     
 def merge(file_names):
     global merged_map
-    # validate file names
-    
+
     imgs = []
     dim = (800, 600)
     for file_name in file_names:
-        img = cv2.imread(file_name, 1)
-        img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-        imgs.append(img)
+        if check_image_extension(file_name):
+            img = cv2.imread(file_name, 1)
+            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+            imgs.append(img)
+        else:
+            return False
 
     stitcher = cv2.createStitcher()
     ret, pano = stitcher.stitch(imgs)

@@ -21,23 +21,32 @@ def remove_files():
         del canvas.filenames[file_id]
         canvas.delete(file_id)
         canvas.delete(selected_file_ids[file_id])
+    left_file_names = canvas.filenames.values()
+    canvas.delete("all")
     selected_file_ids.clear()
+    canvas.nextcoords = [50, 20]
+    canvas.filenames = {}
+    for file_name in left_file_names:
+        add_file(file_name)    
     
 def merge():
     if len(canvas.filenames.values()) < 2:
         messagebox.showinfo("Warning", "Select at least 2 items to merge.")
     else:
         merged_map = fondersi.merge(canvas.filenames.values())
-        
-        res1 = messagebox.askyesno("Fondersi","Merging successful! \nWould you like to display the merged map?")
-        if res1:
-            fondersi.display()
-            
-        res2 = messagebox.askyesno("Fondersi","Would you like to save the merged map?")
-        if res2:
-            res3 = filedialog.asksaveasfilename(title = "Save")
-            fondersi.save(res3)
-            messagebox.showinfo("Fondersi", "Merged map is saved successfully!")
+        if type(merged_map) != type(None):
+            res1 = messagebox.askyesno("Fondersi","Merging successful! \nWould you like to display the merged map?")
+            if res1:
+                fondersi.display()
+                
+            res2 = messagebox.askyesno("Fondersi","Would you like to save the merged map?")
+            if res2:
+                res3 = filedialog.asksaveasfilename(title = "Save")
+                if res3:
+                    fondersi.save(res3)
+                    messagebox.showinfo("Fondersi", "Merged map is saved successfully!")
+        else:
+            messagebox.showinfo("Fondersi", "Selected items cannot be merged.\nSelect items with common features.")
 
 
 #=================main GUI=========================
