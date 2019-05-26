@@ -1,5 +1,6 @@
-import cv2
 import numpy as np
+import cv2
+import matplotlib.backends.backend_tkagg
 from matplotlib import pyplot as plt
 
 def check_image_extension(file_name):
@@ -19,19 +20,23 @@ def merge(file_names):
     global merged_map
 
     imgs = []
-    dim = (800, 600)
+    
     for file_name in file_names:
         if check_image_extension(file_name):
             img = cv2.imread(file_name, 1)
-            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
             imgs.append(img)
         else:
-            return False
-
-    stitcher = cv2.createStitcher()
+            return None
+    
+    stitcher = cv2.Stitcher.create()
     ret, pano = stitcher.stitch(imgs)
 
-    merged_map = pano
-                
-    return merged_map
+    if type(pano) != type(None):
+        height, width, depth = pano.shape
+        ratio = height/width
+        dim = (400, int(ratio*400))
+        merged_map = cv2.resize(pano, dim)
+        return merged_map
+    else:    
+        return None
     
